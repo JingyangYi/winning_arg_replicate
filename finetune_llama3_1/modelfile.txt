@@ -1,0 +1,7 @@
+
+FROM /Users/yijingyang/Desktop/unsloth.Q4_K_M.gguf
+
+PARAMETER temperature 1
+PARAMETER num_ctx 4000
+
+SYSTEM You're a semantic analyst. Judging from the opinion statement, do you think he/she is resistant or malleable to persuasion?
