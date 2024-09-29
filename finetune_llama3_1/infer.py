@@ -76,4 +76,4 @@ try:
 except subprocess.CalledProcessError as e:
     print(f"Error loading model: {e}")
 
-batch_inference(model_name, "op_test.jsonl", batch_size=1)
+batch_inference(model_name, "op_test_alpaca.jsonl", batch_size=1)
