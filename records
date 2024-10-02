@@ -5,7 +5,7 @@ Results
 Pairs (which reply successfully convinced the original poster?):
 
 Accuracy for direct prediction with GPT-3.5 turbo is 0.485.
-Accuracy for direct prediction with GPT-3.5 turbo with knowledge is 0.530, with p-value: 0.368
+Accuracy for direct prediction with GPT-3.5 turbo with knowledge is 0.530
 Accuracy for predict-then-explain with GPT-3.5 turbo is 0.470
 Accuracy for explain-then-predict with GPT-3.5 turbo is 0.455
 
