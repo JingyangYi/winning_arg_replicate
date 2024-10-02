@@ -94,8 +94,8 @@ instruction = ("You're a semantic analyst. Judging from the opinion statement, d
 
 
 print("Creating jsonl files for Llama finetuning.")
-create_jsonl(original_posts_train, 'finetune_llama3_1/op_train_alpaca.jsonl', instruction)
-create_jsonl(original_posts_test, 'finetune_llama3_1/op_test_alpaca.jsonl', instruction)
+create_jsonl(original_posts_train, 'finetune_llama3_1/finetune_datasets/op_train_alpaca.jsonl', instruction)
+create_jsonl(original_posts_test, 'finetune_llama3_1/finetune_datasets/op_test_alpaca.jsonl', instruction)
 
 
 def create_gpt_prompts(data, filename, prefix):
@@ -119,5 +119,5 @@ def create_gpt_prompts(data, filename, prefix):
 prefix = "You're a semantic analyst. Now I will show you a person's opinion statement. We know that the person publicly announced his/her argument and encouraged other people to challenge it. Judging from the following context, do you think he/she is resistant or malleable to persuasion? Answer only with 'malleable' or 'resistant'. \n text: \n"
 
 print("Creating jsonl files for GPT3.5 prompts.")
-create_gpt_prompts(original_posts_train, 'op_train_gpt.jsonl', prefix)
-create_gpt_prompts(original_posts_test, 'op_test_gpt.jsonl', prefix)
+create_gpt_prompts(original_posts_train, 'prompts_datasets/op_train_gpt.jsonl', prefix)
+create_gpt_prompts(original_posts_test, 'prompts_datasets/op_test_gpt.jsonl', prefix)

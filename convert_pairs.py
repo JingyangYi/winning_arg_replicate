@@ -101,12 +101,12 @@ def creat_op_reply_json(data, file_path1, file_path2, instruction):
             f2.write("\n")
 
 
-instruction = "This is a conversation from an online discussion community. The first was a poster who posted an opinion, and the next two replies were each trying to convince the poster to revise his opinion. The two responses were similar, but one managed to convince the poster and the other didn't. Now judge which response succeeded in persuading. Answer first or second only。"
+instruction = "This is a conversation from an online discussion community. The first was a poster who posted an opinion, and the next two replies were each trying to convince the poster to revise his opinion. The two responses were similar, but one managed to convince the poster and the other didn't. Now judge which response succeeded in persuading. Answer first or second only."
 
-train_file_path1 = "finetune_llama3_1/pairs_train_alpaca.jsonl"
-train_file_path2 = 'pairs_train_gpt.jsonl'
-test_file_path1 = "finetune_llama3_1/pairs_test_alpaca.jsonl"
-test_file_path2 = 'pairs_test_gpt.jsonl'
+train_file_path1 = "finetune_llama3_1/finetune_datasets/pairs_train_alpaca.jsonl"
+train_file_path2 = 'prompts_datasets/pairs_train_gpt.jsonl'
+test_file_path1 = "finetune_llama3_1/finetune_datasets/pairs_test_alpaca.jsonl"
+test_file_path2 = 'prompts_datasets/pairs_test_gpt.jsonl'
 
 creat_op_reply_json(pairs_train, train_file_path1, train_file_path2, instruction)
 creat_op_reply_json(pairs_test, test_file_path1, test_file_path2, instruction)
