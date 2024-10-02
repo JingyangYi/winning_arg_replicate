@@ -1,0 +1,42 @@
+Results
+
+#########################################################################
+
+Pairs (which reply successfully convinced the original poster?):
+
+Accuracy for direct prediction with GPT-3.5 turbo is 0.485.
+Accuracy for direct prediction with GPT-3.5 turbo with knowledge is 0.530
+Accuracy for predict-then-explain with GPT-3.5 turbo is 0.470
+Accuracy for explain-then-predict with GPT-3.5 turbo is 0.455
+
+Without knowledge:
+The original model accuracy on test set is 0.505
+The model fine-tuned with target tags: accuracy on test set is 0.535
+
+
+With knowledge:
+The original model accuracy on test set is 0.540
+The model fine-tuned with target tags: accuracy on test set is 0.530
+The model fine-tuned with target tags plus explanations by GPT3.5: accuracy on test set is 0.530
+
+Two stage:
+Accuracy for two stage prediction with GPT-3.5 turbo is 0.575.
+
+#########################################################################
+
+OPs(is this original poster resistant or malleable to persuasion?):
+
+Accuracy for direct prediction with GPT-3.5 turbo is 0.525.
+Accuracy for direct prediction with knowledge with GPT-3.5 turbo is 0.438
+Accuracy for predict-then-explain with GPT-3.5 turbo is 0.555
+Accuracy for explain-then-predict with GPT-3.5 turbo is 0.550
+
+Without knowledge:
+The original model accuracy on test set is 0.495
+The model fine-tuned with target tags: accuracy on test set is 0.540
+The model fine-tuned with target tags plus explanations by GPT3.5: accuracy on test set is 0.565
+
+WIth knowledge:
+The original model accuracy on test set is 0.475
+The model fine-tuned with target tags: accuracy on test set is 0.515
+
