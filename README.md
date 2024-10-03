@@ -3,7 +3,20 @@ Project 3: Attempts to Prompt and Finetune LLMs as Semantic Classifiers
 *This is a report to the UChicago Human+AI lab Trial Project 3: Persuasive argument prediction*
 
 ## Summary:
-In this project, I tried various ways to prompt and finetune LLMs (mainly GPT 3.5 and Llama 3.1-8B) to make them achieve better performance on semantic classification tasks with data set from (Tan etal, 16a). Specifically, two tasks are involved: 1) Persuasion prediction: judging which reply is more persuasive to the original poster. 2) Malleability prediction: judging open-mindedness from the claimer's opinion statement. I found that these tasks can be very hard for LLMs. When tested on a balanced dataset with 200 samples, baseline performances of GPT 3.5 or Llama 3.1 are both around 50% of accuracy. However, I found the following methods can improve the predictions performances. 1) Applying a two stages method to prompt the LLM can improve the performances largely. 2) Adding prior persuasion knowledge to the prompts. 3) Finetuning LLMs with correct categories and explanations. Besides, I find that prompting GPT 3.5 with explain-then-predict and predict-then-explain instructions merely achieved mixed performances and there isn't much difference between the explain-then-predict and predict-then-explain. 
+In this project, I tried various ways to prompt and finetune LLMs (mainly GPT 3.5 and Llama 3.1-8B) to make them 
+achieve better performance on semantic classification tasks with data set from (Tan etal, 16a). Specifically, two 
+tasks are involved: 1) Persuasion prediction: judging which reply is more persuasive to the original poster. 2) 
+Malleability prediction: judging open-mindedness from the claimer's opinion statement. I found that these tasks can 
+be very hard for LLMs. When tested on a balanced dataset with 200 samples, baseline performances of GPT 3.5 or Llama 
+3.1 are both around 50% of accuracy. I tried the following methods to improve the performances. 1) Adding prior 
+persuasion knowledge to the prompts. Its effectiveness depends on the quality of the knowledge. 2) Finetuning LLMs 
+with correct categories and 
+explanations. These finetuning generally improve the accuracy. 3) Applying a two 
+stages method to prompt the LLM. In persuasion prediction, it can improve the performances largely but didn't 
+   perform well in malleability prediction. Besides, I 
+   find 
+   that 
+   prompting GPT 3.5 with explain-then-predict and predict-then-explain instructions merely achieved mixed performances and there isn't much difference between the explain-then-predict and predict-then-explain. 
 
 ## Files
 *Note: to check my coding style, you can just see `convert_op.py`, `gpt3.ipynb`, `pairs.ipynb`. Other scripts are 
@@ -28,19 +41,53 @@ did all the prompts. For Llama 3.1-8B, I used [Unsloth](https://github.com/unslo
 finetune and to make inferences locally. This package can significantly reduce the memory usage and accelerate the 
 finetuning so that I can run it on my PC. For training, I randomly selected 1000 samples as a balanced training set and another 200 samples as a balanced test set. Note that for persuasion task dataset, I arranged the order of the positive and negative replies randomly in a prompt so that when finetuning models it won't just learn to answer a fixed first or second.
 
-## Discussions on My Findings:
+![image](graph.png)
+## Discussions:
 
-- *I only discuss the behaviors of models that involved in this project, more advanced model may perform better.* 
+- *I only discuss the behaviors of models that involved in this project, more advanced model may perform differently.* 
 - *Also note that the accuracy rates of each method vary at each implementation since there are randomness during 
   training. All results came from my last run.*
 1. **For tasks like semantic classification, LLMs can only perform at chance level.** Firstly, LLMs do not have a consistent judging criteria for these tasks. Take GPT 3.5 as an example, when prompted at default temperature for multiple times, it tends to give different predictions to the same prompts content. However, if set temperature to a lower level, it instead gives an unchanging prediction to different prompts. These behaviors indicate that it doesn't have a coherent knowledge or capability to make semantic classifications. Secondly, for LLMs, judging which reply is more persuasive or telling if a person is open-minded means compressing information from lengthy paragraphs into one word of persuasiveness or malleability. This compression may increasingly lose accuracy when the paragraphs grow longer. [example here] The average length of original posts + two replies is 3896 words.
-2. **Adding knowledge about persuasion to the prompts can improve performances.** I extract these knowledge from the 
+
+
+2. **Adding knowledge about persuasion to the prompts can potentially improve performances but the quality matters.** I 
+   extract these knowledge from the 
    paper (Tan etal, 16a). The knowledge looks like this: *"Hint: 1. Reply Length: Longer replies tend to be more 
    persuasive, as they can convey more information and elaborate on points effectively. 2. Language Dissimilarity....
-   .3. Links and Evidence:....."*, and they are added to the end of each prompt. Intuitively, adding knowledge in 
-   prompting can be helpful for the predictions and the level of improvement depends on the quality of the knowledge and LLMs' inference capability. 
+   .3. Links and Evidence:....."*, and they are added to the end of each prompt. Adding 
+   knowledge was effective in persuasion prediction but not in malleability prediction, these results aligns with 
+   prediction results in the paper. Intuitively, the effectiveness of the knowledge adding largely depends on the 
+   quality of knowledge. 
+
+
 3. **Finetuned models generally performs better, but only moderately.** I used two ways to finetune Llama 3.1 8B. Firstly, I solely use the truth tags as training targets. For persuasion prediction they are just "first" or "second" and for malleability prediction they are "resistant" or "malleable". In the second method, I added explanations generated by GPT 3.5 to training targets along with truth tags. For example, for a pair of original post and replies, if it is the first reply that successfully persuaded the original poster, I would ask GPT 3.5 why the first reply is more persuasive and collect the answers. Then, combine truth tags and explanations as Llama training targets. As expected, for prediction accuracy, zero-shot < finetuned with tags < finetuned with tags plus explanations. Finetuning with tags improves accuracy by about 5% on both tasks, while finetuning with tags plus explanations further improves by about 3% on both tasks.  
 I found that the training loss never converge effectively during finetuning with tags. Only the first 20 steps or so reduce the loss, then the curve becomes bumpy and never falls effectively. The initial steps may force the LLM to find patterns in paragraphs, but the patterns are really obscure and the training curve stops falling after initial steps. Finetuning with explanations had similar training loss curve, but it performs a bit better. My guess is that Llama was trying to mimic the inference process of GPT 3.5. Since GPT 3.5 was given the correct answer and knowledge, therefore, if its inference process was indeed effective for the classification task, the finetuned Llama would also perform better.
-Why are predict-then-explain and explain-then-predict not very effective methods and why do they perform generally the same** My results show that using these two methods, GPT 3.5 performed a little bit worse in persuasion task but performed a bit better in malleability task. My guess for such mixed results is that when dealing with difficult classification tasks, LLMs can easily fall into a slippery slop. Transformers generate next token based on previous inputs, and the generated token would influence subsequent generations. Take predict-then-explain as an example, if LLM generated the wrong prediction at first, then the whole explanation are meaningless since it can't revise previously generated tokens. Same as to explain-then-predict, explanations always indicate some preferences over one side of the category, therefore the prediction might be determined by a few initial tokens in explanation. Therefore, it looks like LLMs have more space to reasoning, but the actual prediction performance didn't improve much.  
 
-4. **A two stage prompting method can significantly improve the prediction accuracy.** If we let LLMs to reason in one prompt, it can fall into a slippery slop because it can't revise its previous generations. But the following two stage method can avoid this to some extent. Take persuasion task as an example,  1st stage: give GPT 3.5 the original post and two replies and then ask it to analyse the two replies separately and objectively based on the persuasion knowledge provided in the instruction. Most importantly, ask it not to make any conclusions.  2nd stage: start a new conversation and use the analysis generated in 1st stage as new prompt content. Then ask GPT 3.5: based on the persuasion knowledge and the analysis on the two replies, which one won the persuasion? The first stage asked the LLM to distill information from the paragraph based on knowledge without preferences. Then in the second stage, the classification task became much easier since the first stage compressed paragraphs that have thousands of tokens and relatively sparse information into an analysis that have much fewer tokens and much denser information. This two stage method can improve performance by 10% or even more compared to direct prompting.
+
+4. **Why are predict-then-explain and explain-then-predict not very effective methods and why do they perform 
+   generally the same.** My results show that using these two methods, GPT 3.5 performed a little bit worse in 
+   persuasion task but performed a bit better in malleability task. My guess for such mixed results is that when 
+   dealing with difficult classification tasks, LLMs can easily fall into a slippery slop. Transformers generate 
+   next token based on previous inputs, and the generated token would influence subsequent generations. Take 
+   predict-then-explain as an example, if LLM generated the wrong prediction at first, then the subsequent explanation 
+   would be meaningless since it can't revise previously generated tokens. Same as to explain-then-predict, 
+   explanations always contain some preferences over one side of the category, therefore the subsequent prediction 
+   might be 
+   determined by a few initial tokens in explanation. Though it looks like LLMs have more space to reasoning, the 
+   actual prediction performance didn't improve much.  
+
+4. **A two stage prompting method can significantly improve the prediction accuracy in persuasion prediction but not in 
+   malleability prediction.** If we let LLMs to reason in one prompt, it can fall into a slippery slop because it can't 
+   revise its 
+   previous generations. But the following two stage method can avoid this to some extent. Take persuasion task as 
+   an example,  1st stage: give GPT 3.5 the original post and two replies and ask it to analyse the two replies 
+   separately and objectively based on the persuasion knowledge provided in the instruction. Most importantly, ask 
+   it not to make any conclusions.  2nd stage: start a new conversation and use the analysis generated in 1st stage 
+   as new prompt content. Then ask GPT 3.5: based on the persuasion knowledge and the analysis on the two replies, 
+   which one won the persuasion? The first stage asked the LLM to distill information from the paragraph. Then in 
+   the second stage, the classification task became much easier since the first stage had compressed paragraphs that 
+   have thousands of tokens and relatively sparse information into an analysis that has much fewer tokens and much 
+   denser information. This two stage method can improve performance by up to 10%compared to direct 
+   prompting. But this method is not effective on malleability prediction, probably because: 1) it's very hard to 
+   ask GPT 3.5 to analyse the open-mindedness of a paragraph solely from linguistic perspective and don't make any 
+   tendencies in the first stage. 2) the quality of knowledge provided is not good enough. 

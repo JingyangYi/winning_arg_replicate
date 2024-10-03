@@ -34,9 +34,11 @@ Accuracy for explain-then-predict with GPT-3.5 turbo is 0.550
 Without knowledge:
 The original model accuracy on test set is 0.495
 The model fine-tuned with target tags: accuracy on test set is 0.540
-The model fine-tuned with target tags plus explanations by GPT3.5: accuracy on test set is 0.565
 
-WIth knowledge:
+With knowledge:
 The original model accuracy on test set is 0.475
 The model fine-tuned with target tags: accuracy on test set is 0.515
+The model fine-tuned with target tags plus explanations by GPT3.5: accuracy on test set is 0.565
 
+Two stage:
+Accuracy for two stage prediction with GPT-3.5 turbo is 0.487
