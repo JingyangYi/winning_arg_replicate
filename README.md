@@ -43,6 +43,7 @@ finetuning so that I can run it on my PC. For training, I randomly selected 1000
 
 ## Discussions:
 ![image](graph.png)
+*(k) means the LLMs were prompted with knowledge. ft means finetuning. Baseline model is the pretrained Llama 3.1 8B.*
 - *I only discuss the behaviors of models that involved in this project, more advanced model may perform differently.* 
 - *Also note that the accuracy rates of each method vary at each implementation since there are randomness during 
   training. All results came from my last run.*
